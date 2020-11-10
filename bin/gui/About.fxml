@@ -16,6 +16,10 @@
             <Insets bottom="10.0" left="20.0" top="10.0" />
          </padding>
       </Label>
-      <Label text="JavaFX application demo" />
+      <Label text="JavaFX application demo">
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </Label>
    </children>
 </VBox>
