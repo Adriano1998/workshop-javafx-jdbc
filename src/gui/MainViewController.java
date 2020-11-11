@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.services.DepartmentService;
 
 public class MainViewController implements Initializable {
 	
@@ -77,6 +78,27 @@ public class MainViewController implements Initializable {
 		}
 	}
 	
-	
+	//processo manual de injetar dependencia no controller e depois chamar para atualizar os dados na tela do tableview. 
+	private void loadView2(String absoluteName) {
+		try{
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			VBox newVbox = loader.load();
+			Scene mainScene = Main.getMainScene();
+			VBox mainVBox = (VBox)((ScrollPane)mainScene.getRoot()).getContent();
+			Node mainMenu = mainVBox.getChildren().get(0);
+			mainVBox.getChildren().clear();
+			mainVBox.getChildren().add(mainMenu);
+			mainVBox.getChildren().addAll(newVbox.getChildren());
+			//a partir do loader pode pegar a referencia para o controller da view.
+			DepartmentListController controller  = loader.getController();
+			//injetou a dependencia
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+			
+		}
+		catch(IOException e) {
+			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
+		}
+	}
 
 }
