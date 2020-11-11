@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -38,21 +39,26 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		loadView("/gui/DepartmentList.fxml");
+		//função para inicializar o controlador. Ação de inicialização do controller departmentlistcontroller.
+		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> {
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});
 	}
 	
 	@FXML
 	public void onMenuItemAboutAction() {
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml", x->{});
 	}
 	
 	@Override
 	public void initialize(URL uri, ResourceBundle rb) {
 		
 	}
+	//com tudo isso, consegue manipular a cena principal incluindo alem do main menu, os filhos da janela que tiver abrindo.
 	
 	//metodo para carregar uma tela.
-	private void loadView(String absoluteName) {
+	private <T> void loadView(String absoluteName, Consumer<T> initializingAction) {
 		try{
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			VBox newVbox = loader.load();
@@ -71,34 +77,19 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().add(mainMenu);
 			mainVBox.getChildren().addAll(newVbox.getChildren());
 			
-			//com tudo isso, consegue manipular a cena principal incluindo alem do main menu, os filhos da janela que tiver abrindo.
+			//getcontroller vai retornar o controlador do tipo que for chamado. Ou seja, o departmentlistcontroller como foi especificado la em cima.
+			T controller = loader.getController();
+		
+			
+			//para executar o initializingaction: tem que chamar a função accept do consumer.
+			initializingAction.accept(controller);
+			
+			//essas 2 linhas de cima vão fazer com que seja exectuado a função que for passada como argumento
 		}
 		catch(IOException e) {
 			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
-	//processo manual de injetar dependencia no controller e depois chamar para atualizar os dados na tela do tableview. 
-	private void loadView2(String absoluteName) {
-		try{
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			VBox newVbox = loader.load();
-			Scene mainScene = Main.getMainScene();
-			VBox mainVBox = (VBox)((ScrollPane)mainScene.getRoot()).getContent();
-			Node mainMenu = mainVBox.getChildren().get(0);
-			mainVBox.getChildren().clear();
-			mainVBox.getChildren().add(mainMenu);
-			mainVBox.getChildren().addAll(newVbox.getChildren());
-			//a partir do loader pode pegar a referencia para o controller da view.
-			DepartmentListController controller  = loader.getController();
-			//injetou a dependencia
-			controller.setDepartmentService(new DepartmentService());
-			controller.updateTableView();
-			
-		}
-		catch(IOException e) {
-			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
-		}
-	}
-
+	
 }
