@@ -49,7 +49,10 @@ public class DepartmentListController implements Initializable {
 	public void onBtNewAction(ActionEvent event) {
 		//acessando o stage - pega referencia pro stage atual e passa para criar a janela de formulario.
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		
+		Department obj = new Department();
+		
+		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}
 
 	//uma forma de injetar dependencia sem usar o new.
@@ -90,10 +93,18 @@ public class DepartmentListController implements Initializable {
 		tableViewDepartment.setItems(obsList);
 	}
 	//vai receber por parametro uma referencia para o stage da janela que criou a janela de dialogo
-	private void createDialogForm(String absoluteName, Stage parentStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load(); 
+			
+			//pegou o controlador da tela que acabou de carregar
+			DepartmentFormController controller = loader.getController();
+			//injetar nesse controlador o departamento.
+			controller.setDepartment(obj);
+			//chamar o metodo update para carregar os dados do obj no formulario.
+			controller.updateFormData();
+			
 			//criar uma variavel do tipo stage.
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter department data");
