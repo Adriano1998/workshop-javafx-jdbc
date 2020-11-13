@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
 	//criou a dependencia
 	private DepartmentService service;
@@ -106,7 +107,11 @@ public class DepartmentListController implements Initializable {
 			
 			controller.setDepartmentService(new DepartmentService());
 			
+			//esta se inscrevendo para receber o evento. Quando o evento for disparado vai ser executado o metodo ondatachanged.
+			controller.subscribeDataChangeListener(this);
+			
 			controller.updateFormData();
+			
 			
 			
 			
@@ -130,6 +135,15 @@ public class DepartmentListController implements Initializable {
 		catch(IOException e) {
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	//o que vai ter que executar no departmentlistcontroller quando receber uma notificação que os dados foram atualizados
+	//função que faz essa atualização : updatetableview.
+	//na hora que disparar esse evento que alteraram os dados, chama a função updatetableview.
+	@Override
+	public void OnDataChanged() {
+	updateTableView();
+		
 	}
 
 }
