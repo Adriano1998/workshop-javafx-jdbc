@@ -34,7 +34,7 @@ public class MainViewController implements Initializable {
 	
 	//MÉTODOS PARA TRATAR CADA UMA DAS AÇÕES DESSES ITENS DE MENU
 	@FXML
-	public void onMenuItemSellerAction() {
+	public void onMenuItemVendedorAction() {
 		loadView("/gui/SellerList.fxml", (SellerListController controller) -> {
 			controller.setSellerService(new SellerService());
 			controller.updateTableView();
@@ -42,7 +42,7 @@ public class MainViewController implements Initializable {
 	}
 	
 	@FXML
-	public void onMenuItemDepartamentAction() {
+	public void onMenuItemDepartamentoAction() {
 		//função para inicializar o controlador. Ação de inicialização do controller departmentlistcontroller.
 		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> {
 			controller.setDepartmentService(new DepartmentService());
