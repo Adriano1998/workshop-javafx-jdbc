@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -135,7 +136,9 @@ public class SellerListController implements Initializable, DataChangeListener {
 			controller.setSeller(obj);
 			//chamar o metodo update para carregar os dados do obj no formulario.
 			
-			controller.setSellerService(new SellerService());
+			controller.setServices(new SellerService(), new DepartmentService());
+			
+			controller.loadAssociatedObjects();
 			
 			//esta se inscrevendo para receber o evento. Quando o evento for disparado vai ser executado o metodo ondatachanged.
 			controller.subscribeDataChangeListener(this);
@@ -163,6 +166,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			
 		}
 		catch(IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	} 
